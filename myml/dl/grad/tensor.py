@@ -122,27 +122,16 @@ class Tensor:
             a, b = node.args
 
             if node.func == "+":
-                if a.tensor.requires_grad and b.tensor.requires_grad:
-                    return Tensor._diff(a) + Tensor._diff(b)
-                elif not a.tensor.requires_grad and b.tensor.requires_grad:
-                    return Tensor._diff(b)
-                elif a.tensor.requires_grad and not b.tensor.requires_grad:
-                    return Tensor._diff(a)
-                else:
-                    return Tensor([0])
+                return Tensor._diff(a) + Tensor._diff(b)
             elif node.func == "*":
-                if a.tensor.requires_grad and b.tensor.requires_grad:
-                    return Tensor._diff(a) * b.tensor + Tensor._diff(b) * node.args[
-                        0].tensor
-                elif not a.tensor.requires_grad and b.tensor.requires_grad:
-                    return a.tensor * Tensor._diff(b)
-                elif a.tensor.requires_grad and not b.tensor.requires_grad:
-                    return Tensor._diff(a) * b.tensor
-                else:
-                    return Tensor([0])
+                return Tensor._diff(a) * b.tensor + Tensor._diff(b) * a.tensor
+            elif node.func == "/":
+                return (b.tensor * Tensor._diff(a) - Tensor._diff(b) * a.tensor) / (b.tensor ** 2)
             elif node.func == "**":
                 if a.tensor.requires_grad and not b.tensor.requires_grad:
-                    return b.tensor * a.tensor ** (b.tensor + Tensor([-1]))
+                    return b.tensor * a.tensor ** (b.tensor - 1)
+                else:
+                    raise NotImplementedError
         else:
             return Tensor([1])
 
