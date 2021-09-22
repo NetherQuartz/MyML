@@ -107,8 +107,16 @@ def test_diff():
 
     y = a * x + b
     y.backward()
-    assert (y.grad.array == a.array).all()
+    assert (y.grad.array == a.array == a.array).all()
 
-    y = a * x ** Tensor([2]) + b * x + b  # y = ax^2 + bx + b
+    y = a * x ** 2 + b * x + b  # y = ax^2 + bx + b
     y.backward()  # y' = 2ax + b
     assert (y.grad.array == np.array([29])).all()
+
+    y = (3 * x + 4) / (x ** 2)
+    y.backward()  # y' = -(3x + 8)/x^3
+    assert (y.grad.array == (-(3 * x + 8) / (x**3)).array).all()
+
+    y = -x ** 4
+    y.backward()
+    assert (y.grad.array == (-4 * (x ** 3)).array).all()
