@@ -16,6 +16,9 @@ class Tensor:
                  requires_grad: bool = None,
                  dtype=np.float32):
 
+        if type(array) in [int, float]:
+            array = [array]
+
         self._array: np.ndarray = np.array(array, dtype=dtype)
         self._graph: Node = Node(self, func, args)
 
