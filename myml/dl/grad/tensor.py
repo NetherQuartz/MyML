@@ -53,16 +53,62 @@ class Tensor:
     def graph(self):
         return self._graph
 
-    def __add__(self, other: Tensor) -> Tensor:
+    def __add__(self, other) -> Tensor:
+        if type(other) in [int, float]:
+            other = Tensor([other])
         return Tensor(array=self._array + other._array,
                       func="+", args=[self._graph, other._graph])
 
-    def __mul__(self, other: Tensor) -> Tensor:
+    def __radd__(self, other):
+        return self.__add__(other)
+
+    def __sub__(self, other) -> Tensor:
+        if type(other) in [int, float]:
+            other = Tensor([other])
+        return Tensor(array=self._array - other._array,
+                      func="-", args=[self._graph, other._graph])
+
+    def __rsub__(self, other):
+        return (-self).__add__(other)
+
+    def __mul__(self, other) -> Tensor:
+        if type(other) in [int, float]:
+            other = Tensor([other])
         return Tensor(array=self._array * other._array,
                       func="*", args=[self._graph, other._graph])
 
-    def __pow__(self, other: Tensor) -> Tensor:
-        return Tensor(array=self._array ** other._array, func="**", args=[self._graph, other._graph])
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
+    def __truediv__(self, other) -> Tensor:
+        if type(other) in [int, float]:
+            other = Tensor([other])
+        return Tensor(array=self._array / other._array,
+                      func="/", args=[self._graph, other._graph])
+
+    def __rtruediv__(self, other):
+        if type(other) in [int, float]:
+            other = Tensor([other])
+        return Tensor(array=other._array / self._array,
+                      func="/", args=[other._graph, self._graph])
+
+    def __pow__(self, other) -> Tensor:
+        if type(other) in [int, float]:
+            other = Tensor([other])
+        return Tensor(array=self._array ** other._array,
+                      func="**", args=[self._graph, other._graph])
+
+    def __rpow__(self, other):
+        if type(other) in [int, float]:
+            other = Tensor([other])
+        return Tensor(array=other._array ** self._array,
+                      func="**", args=[other._graph, self._graph])
+
+    def __neg__(self):
+        return -1 * self
+
+    def __pos__(self):
+        return self
 
     def __str__(self) -> str:
         return str(self._array)

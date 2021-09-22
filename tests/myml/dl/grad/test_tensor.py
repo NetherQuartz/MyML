@@ -10,12 +10,46 @@ def test_add():
     a = Tensor([[1, 2], [3, 4]])
     b = Tensor([[0, -1], [-1, 0]])
     assert ((a + b).array == a.array + b.array).all()
+    assert ((b + 2).array == b.array + 2).all()
+    assert ((2 + b).array == b.array + 2).all()
+
+
+def test_sub():
+    a = Tensor([[1, 2], [3, 4]])
+    b = Tensor([[0, -1], [-1, 0]])
+    assert ((a - b).array == a.array - b.array).all()
+    assert ((b - 2).array == b.array - 2).all()
+    assert ((2 - b).array == 2 - b.array).all()
 
 
 def test_mul():
     a = Tensor([[1, 2], [3, 4]])
     b = Tensor([[0, -1], [-1, 0]])
     assert ((a * b).array == a.array * b.array).all()
+    assert ((b * 2).array == b.array * 2).all()
+    assert ((2 * b).array == b.array * 2).all()
+
+
+def test_div():
+    a = Tensor([[1, 2], [3, 4]])
+    b = Tensor([[0, -1], [-1, 0]])
+    assert ((a / b).array == a.array / b.array).all()
+    assert ((b / 2).array == b.array / 2).all()
+    assert ((2 / b).array == 2 / b.array).all()
+
+
+def test_pow():
+    a = Tensor([[1, 2], [3, 4]])
+    b = Tensor([[0, -1], [-1, 0]])
+    assert ((a ** b).array == a.array ** b.array).all()
+    assert ((b ** 2).array == b.array ** 2).all()
+    assert ((2 ** b).array == 2 ** b.array).all()
+
+
+def test_unary():
+    a = Tensor([[1, 2], [3, 4]])
+    assert ((-a).array == -a.array).all()
+    assert ((+a).array == +a.array).all()
 
 
 def test_get_array():
