@@ -116,6 +116,13 @@ class Tensor:
     def __str__(self) -> str:
         return str(self._array)
 
+    def __repr__(self):
+        str_array = self.array.__str__().split("\n")
+        prefix = "Tensor"
+        str_array[0] = prefix + str_array[0]
+        str_array[1:] = [" " * len(prefix) + line for line in str_array[1:]]
+        return "\n".join(str_array)
+
     @staticmethod
     def _diff(node: Node) -> Tensor:
         if not node.tensor.requires_grad:
