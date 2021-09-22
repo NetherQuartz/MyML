@@ -68,7 +68,12 @@ def test_get_graph():
 
 
 def test_get_grad():
-    pass
+    a = Tensor([[1, 2], [3, 4]])
+    a *= a
+    a.backward()
+    assert id(a.graph) == id(a._graph)
+    with pytest.raises(AttributeError):
+        a.graph = None
 
 
 def test_get_shape():
