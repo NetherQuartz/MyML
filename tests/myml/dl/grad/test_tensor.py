@@ -46,6 +46,12 @@ def test_pow():
     assert ((2 ** b).array == 2 ** b.array).all()
 
 
+def test_matmul():
+    a = Tensor([[1, 2], [3, 4]])
+    b = Tensor([[0, -1], [-1, 0]])
+    assert ((a @ b).array == a.array @ b.array).all()
+
+
 def test_unary():
     a = Tensor([[1, 2], [3, 4]])
     assert ((-a).array == -a.array).all()

@@ -83,6 +83,10 @@ class Tensor:
     def __rmul__(self, other):
         return self.__mul__(other)
 
+    def __matmul__(self, other: Tensor) -> Tensor:
+        return Tensor(array=self._array @ other._array,
+                      func="@", args=[self._graph, other._graph])
+
     def __truediv__(self, other) -> Tensor:
         if type(other) in [int, float]:
             other = Tensor([other])
