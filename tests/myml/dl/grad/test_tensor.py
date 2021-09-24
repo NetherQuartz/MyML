@@ -131,3 +131,9 @@ def test_diff():
     y = -x ** 4
     y.backward()
     assert (y.grad[0].array == (-4 * (x ** 3)).array).all()
+
+    a = Tensor([[1, 2], [3, 4]])
+    x = Tensor([4, 5], requires_grad=True)
+    y = a @ (x - 4)
+    y.backward()
+    assert (y.grad[0].array == a.array).all()
