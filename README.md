@@ -8,7 +8,7 @@ My own implementation of machine learning algorithms.
 
 Planned to implement:
 - Deep learning
-  - [ ] Dynamic gradient calculation
+  - [x] Dynamic gradient calculation
   - [ ] Optimizers
   - [ ] Linear layers
   - [ ] Convolutional layers
