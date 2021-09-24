@@ -130,13 +130,15 @@ class Tensor:
     @staticmethod
     def _diff(node: Node) -> Tensor:
         if not node.tensor.requires_grad:
-            return Tensor([0])
+            return Tensor(np.zeros_like(node.tensor.array))
 
         if len(node.args) == 2:
             a, b = node.args
 
             if node.func == "+":
                 return Tensor._diff(a) + Tensor._diff(b)
+            elif node.func == "-":
+                return Tensor._diff(a) - Tensor._diff(b)
             elif node.func == "*":
                 return Tensor._diff(a) * b.tensor + Tensor._diff(b) * a.tensor
             elif node.func == "/":
@@ -146,8 +148,37 @@ class Tensor:
                     return b.tensor * a.tensor ** (b.tensor - 1)
                 else:
                     raise NotImplementedError
+            elif node.func == "@":
+                return Tensor._diff(a) @ b.tensor + a.tensor @ Tensor._diff(b)
         else:
-            return Tensor([1])
+            return Tensor(np.identity(node.tensor.shape[0]))
+
+    @staticmethod
+    def _get_vars(node, accum: set):
+        if len(node.args) > 0:
+            for arg in node.args:
+                if arg.tensor.requires_grad and len(arg.args) == 0:
+                    accum.add((id(arg.tensor), arg.tensor))
+                accum |= Tensor._get_vars(arg, accum)
+        return accum
 
     def backward(self):
-        self._grad = Tensor._diff(self._graph)
+        variables = [e[1] for e in Tensor._get_vars(self._graph, set())]
+        if len(variables) == 0:
+            return
+        grad = []
+        for var in variables:
+            var.requires_grad = False
+        for var in variables:
+            var.requires_grad = True
+            grad.append(Tensor._diff(self._graph))
+            var.requires_grad = False
+        for var in variables:
+            var.requires_grad = True
+        self._grad = grad
+
+    def detach(self) -> Tensor:
+        return Tensor(array=self.array)
+
+    def clear_graph(self):
+        self.__init__(array=self.array, requires_grad=self.requires_grad)
