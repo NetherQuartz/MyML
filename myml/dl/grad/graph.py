@@ -20,7 +20,7 @@ class Node:
             lines = [tab + node.func]
             lines += [Node._rec_str(pad + 1, arg) for arg in node.args]
             return "\n".join(lines)
-        return tab + str(node.tensor.array)
+        return "\n".join(tab + e for e in str(node.tensor.array).split("\n"))
 
     def __repr__(self):
         return Node._rec_str(0, self)
