@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import numpy as np
 from typing import Union
-from functools import reduce
 
 from .graph import Node
 
@@ -25,8 +24,7 @@ class Tensor:
         if requires_grad is not None:
             self._requires_grad = requires_grad
         elif len(self._graph.args) > 0:
-            self._requires_grad = reduce(lambda t, a: t.tensor.requires_grad or a.tensor.requires_grad,
-                                         self._graph.args)
+            self._requires_grad = any(t.tensor.requires_grad for t in self._graph.args)
         else:
             self._requires_grad = False
 
